@@ -1,4 +1,4 @@
-module YandexDirect::Sitelinks
+class YandexDirect::Sitelink
   SERVICE = 'sitelinks'
 
   def self.add_set(params)

@@ -67,14 +67,14 @@ class YandexDirect::AdGroup
   def self.batch_update(ad_groups)
     params = ad_groups.map(&:update_parameters)
     params.each_slice(100) do |add_parameters|
-      YandexDirect.request(SERVICE, 'update', {"AdGroups": add_parameters.compact})["UpdateResults"].map{|r| r["Id"]}
+      YandexDirect.request(SERVICE, 'update', {"AdGroups": add_parameters.compact})["UpdateResults"]
     end
   end
 
   def self.batch_add(ad_groups)
     params = ad_groups.map(&:parameters)
     params.each_slice(100) do |add_parameters|
-      YandexDirect.request(SERVICE, 'add', {"AdGroups": add_parameters.compact})["AddResults"].map{|r| r["Id"]}
+      YandexDirect.request(SERVICE, 'add', {"AdGroups": add_parameters.compact})["AddResults"]
     end
   end
 end

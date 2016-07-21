@@ -1,4 +1,4 @@
-module YandexDirect::Bids
+class YandexDirect::Bid
   SERVICE = 'bids'
 
   def self.list(params)

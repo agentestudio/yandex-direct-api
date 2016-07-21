@@ -7,8 +7,6 @@ require 'uri'
 module YandexDirect
   class RuntimeError < RuntimeError
   end
-  class NotFound < RuntimeError
-  end
 
   def self.url
     configuration['sandbox'] ? 'https://api-sandbox.direct.yandex.com/json/v5/' : 'https://api.direct.yandex.com/json/v5/'
@@ -77,7 +75,7 @@ end
 require 'services/campaign.rb'
 require 'services/add.rb'
 require 'services/ad_group.rb'
-require 'services/keywords.rb'
-require 'services/bids.rb'
+require 'services/keyword.rb'
+require 'services/bid.rb'
 require 'services/dictionaries.rb'
-require 'services/sitelinks.rb'
+require 'services/sitelink.rb'

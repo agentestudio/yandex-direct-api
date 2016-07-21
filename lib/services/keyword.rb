@@ -1,4 +1,4 @@
-module YandexDirect::Keywords
+class YandexDirect::Keyword
   SERVICE = 'keywords'
 
   def self.add(params)

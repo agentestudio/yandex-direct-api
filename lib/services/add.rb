@@ -45,7 +45,8 @@ class YandexDirect::Add
       batch_add(params)
     else
       special_parameters = params.new_text_add_parameters if params.type == "TEXT_AD"
-      YandexDirect.request(SERVICE, 'add', {"Ads": [params.add_parameters(special_parameters)]})["AddResults"].first
+      params.id = YandexDirect.request(SERVICE, 'add', {"Ads": [params.add_parameters(special_parameters)]})["AddResults"].first["Id"]
+      params
     end
   end
 
@@ -54,11 +55,12 @@ class YandexDirect::Add
       batch_update(params)
     else
       special_parameters = params.text_add_parameters if params.type == "TEXT_AD"
-      YandexDirect.request(SERVICE, 'update', {"Ads": [params.update_parameters(special_parameters)]})["UpdateResults"].first
+      params.id = YandexDirect.request(SERVICE, 'update', {"Ads": [params.update_parameters(special_parameters)]})["UpdateResults"].first["Id"]
+      params
     end
   end
 
-  def self.unarchive
+  def self.unarchive(ids)
     ids = [ids] unless params.kind_of?(Array)
     action('unarchieve', ids)
   end
@@ -73,17 +75,17 @@ class YandexDirect::Add
     action('suspend', ids)
   end
 
-  def self.resume
+  def self.resume(ids)
     ids = [ids] unless params.kind_of?(Array)
     action('resume', ids)
   end
 
-  def self.moderate
+  def self.moderate(ids)
     ids = [ids] unless params.kind_of?(Array)
     action('moderate', ids)
   end
 
-  def self.delete
+  def self.delete(ids)
     ids = [ids] unless params.kind_of?(Array)
     action('delete', ids)
   end
@@ -135,7 +137,7 @@ class YandexDirect::Add
       add.update_parameters(special_parameters)
     end
     params.each_slice(100) do |add_parameters|
-      YandexDirect.request(SERVICE, 'update', {"Ads": add_parameters.compact})["UpdateResults"].map{|r| r["Id"]}
+      YandexDirect.request(SERVICE, 'update', {"Ads": add_parameters.compact})["UpdateResults"]
     end
   end
 
@@ -145,7 +147,7 @@ class YandexDirect::Add
       add.add_parameters(special_parameters)
     end
     params.each_slice(100) do |add_parameters|
-      YandexDirect.request(SERVICE, 'add', {"Ads": add_parameters.compact})["AddResults"].map{|r| r["Id"]}
+      YandexDirect.request(SERVICE, 'add', {"Ads": add_parameters.compact})["AddResults"]
     end
   end
 
