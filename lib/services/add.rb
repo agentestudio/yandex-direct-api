@@ -1,7 +1,7 @@
 class YandexDirect::Add
   SERVICE = 'ads'
   attr_accessor :ad_group_id, :campaign_id, :id, :status, :state, :type, :status_clarification, :text, :title, :href, 
-                :display_url_path, :ad_image_hash, :extension_ids, :mobile, :card_id, :sitelink_set_id
+                :display_url_path, :ad_image_hash, :extension_ids, :mobile, :v_card_id, :sitelink_set_id
 
   def initialize(params)
     @ad_group_id = params[:ad_group_id]
@@ -20,7 +20,7 @@ class YandexDirect::Add
     @ad_image_hash = params[:ad_image_hash]
     @extension_ids = params[:extension_ids]
     @mobile = params[:mobile]
-    @card_id = params[:card_id]
+    @v_card_id = params[:v_card_id]
     @extension_ids = params[:extension_ids]
     @mobile = params[:mobile]
     @sitelink_set_id = params[:sitelink_set_id]
@@ -111,7 +111,7 @@ class YandexDirect::Add
             "AdImageHash": @ad_image_hash,
             "AdExtensionIds": @extension_ids || []
            }
-    hash["VCardId"] = @card_id if @card_id.present?
+    hash["VCardId"] = @v_card_id if @v_card_id.present?
     hash["SitelinkSetId"] = @sitelink_set_id if @sitelink_set_id.present?
     ["TextAd", hash]
   end
@@ -124,7 +124,7 @@ class YandexDirect::Add
             "AdImageHash": @ad_image_hash
            }
     hash["CalloutSetting"]["AdExtensions"] = @extension_ids.map{|e| {"AdExtensionId": e, "Operation": "SET"}} if @extension_ids.present?
-    hash["VCardId"] = @card_id if @card_id.present?
+    hash["VCardId"] = @v_card_id if @v_card_id.present?
     hash["SitelinkSetId"] = @sitelink_set_id if @sitelink_set_id.present?
     ["TextAd", hash]
   end
