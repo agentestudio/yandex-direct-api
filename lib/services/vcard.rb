@@ -2,7 +2,8 @@ class YandexDirect::VCard
   SERVICE = 'vcards'
 
   def self.get(ids = nil)
-    params = ids.present? ? {"SelectionCriteria": {"Ids": ids}} : {}
+    params = {"FieldNames": ["Id", "Country", "City", "Street", "House", "Building", "Apartment", "CompanyName", "ExtraMessage", "ContactPerson", "ContactEmail", "MetroStationId", "CampaignId", "Ogrn", "WorkTime", "InstantMessenger", "Phone", "PointOnMap"]}
+    params["SelectionCriteria"] = {"Ids": ids} if ids.present?
     YandexDirect.request(SERVICE, 'get', params)["VCards"]
   end
 
