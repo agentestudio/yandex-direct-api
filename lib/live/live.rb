@@ -45,31 +45,18 @@ module YandexDirect::Live
     result["AdImageUploads"]
   end
 
-  def self.set_ad_image_association(associations)
-    result = YandexDirect::Live.request('AdImageAssociation', {'Action': 'Set', 'AdImageAssociations': associations})
-  end
-
-  def self.bind_images(models)
-    upload_task_ids = models.pluck(:image_upload_task_id)
+  def self.get_uploaded_image_hashes(params)
+    upload_task_ids = params.map{|p| p[:image_upload_task_id]}
     if upload_task_ids.any?
       image_hashes = YandexDirect::Live.get_image_hash(upload_task_ids)
       associations = []
       image_hashes.each do |result|
         unless result['Status'] == 'Pending'
-          model = models.find{|model| model.image_upload_task_id == result['AdImageUploadTaskID']}
-          associations.push({'AdID': model.group_id, 'AdImageHash': result['AdImageHash']}) unless result['Status'] == 'Error'
+          add = params.find{|p| p.image_upload_task_id == result['AdImageUploadTaskID']}
+          associations.push({add_id: add.add_id, ad_image_hash: result['AdImageHash']}) unless result['Status'] == 'Error'
         end
       end
-      result = YandexDirect::Live.set_ad_image_association(associations) if associations.any?
-      if result.present?
-        image_hashes.each do |hash|
-          unless hash['Status'] == 'Pending'
-            model = models.find{|model| model.image_upload_task_id == hash['AdImageUploadTaskID']}
-            model_result = result['ActionsResult'].find{|res| res.present? && res['AdID'].to_i == model.group_id}
-            model.update_column(:image_upload_task_id, 0) if model_result.present? && model_result['Errors'].blank?
-          end
-        end
-      end
+      associations
     end
   end
 end
