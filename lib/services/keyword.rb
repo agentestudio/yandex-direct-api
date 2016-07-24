@@ -23,7 +23,7 @@ class YandexDirect::Keyword
     YandexDirect.request(SERVICE, 'get', { 
       "SelectionCriteria": selection_criteria,
       "FieldNames": ["Id", "Keyword", "State", "Status", "AdGroupId", "CampaignId", "Bid", "ContextBid"]
-    })["Keywords"]
+    })["Keywords"] || []
   end
 
   def self.update(keywords)

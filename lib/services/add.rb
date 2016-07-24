@@ -31,13 +31,14 @@ class YandexDirect::Add
     selection_criteria["CampaignIds"] = params[:campaign_ids] if params[:campaign_ids].present?
     selection_criteria["AdGroupIds"] = params[:ad_group_ids] if params[:ad_group_ids].present?
     selection_criteria["Ids"] = params[:ids] if params[:ids].present?
-    YandexDirect.request(SERVICE, 'get', { 
+    ads = YandexDirect.request(SERVICE, 'get', { 
       "SelectionCriteria": selection_criteria,
       "FieldNames": ['AdGroupId', 'CampaignId', 'State', 'Status', 'StatusClarification', 'Type', 'Id'],
       "TextAdFieldNames": ['SitelinkSetId', 'Text', 'Title', 'Href']
-    })["Ads"].map{|c| new({ad_group_id: c["AdGroupId"], id: c["Id"], status: c["Status"], campaign_id: c["CampaignId"], 
-                          state: c["State"], type: c["Type"], status_clarification: c["StatusClarification"], 
-                          sitelink_set_id: c["TextAd"]["SitelinkSetId"], text: c["TextAd"]["Text"], title: c["TextAd"]["Title"], href: c["TextAd"]["Href"]})}
+    })["Ads"]
+    (ads || []).map{|c| new({ ad_group_id: c["AdGroupId"], id: c["Id"], status: c["Status"], campaign_id: c["CampaignId"], 
+                              state: c["State"], type: c["Type"], status_clarification: c["StatusClarification"], 
+                              sitelink_set_id: c["TextAd"]["SitelinkSetId"], text: c["TextAd"]["Text"], title: c["TextAd"]["Title"], href: c["TextAd"]["Href"]})}
   end
 
   def self.add(params)
@@ -107,11 +108,11 @@ class YandexDirect::Add
             "Title": @title,
             "Href": @href,
             "Mobile": @mobile || "NO",
-            "DisplayUrlPath": @display_url_path,
-            "AdImageHash": @ad_image_hash,
             "AdExtensionIds": @extension_ids || []
            }
+    hash["DisplayUrlPath"] = @display_url_path if @display_url_path.present?
     hash["VCardId"] = @v_card_id if @v_card_id.present?
+    hash["AdImageHash"] = @ad_image_hash if @ad_image_hash.present?
     hash["SitelinkSetId"] = @sitelink_set_id if @sitelink_set_id.present?
     ["TextAd", hash]
   end
@@ -120,9 +121,9 @@ class YandexDirect::Add
     hash = {"Text": @text, 
             "Title": @title,
             "Href": @href,
-            "DisplayUrlPath": @display_url_path,
-            "AdImageHash": @ad_image_hash
            }
+    hash["DisplayUrlPath"] = @display_url_path if @display_url_path.present?
+    hash["AdImageHash"] = @ad_image_hash if @ad_image_hash.present?
     hash["CalloutSetting"]["AdExtensions"] = @extension_ids.map{|e| {"AdExtensionId": e, "Operation": "SET"}} if @extension_ids.present?
     hash["VCardId"] = @v_card_id if @v_card_id.present?
     hash["SitelinkSetId"] = @sitelink_set_id if @sitelink_set_id.present?

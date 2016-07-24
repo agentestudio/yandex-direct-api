@@ -38,7 +38,7 @@ class YandexDirect::Campaign
       "TextCampaignFieldNames": ["BiddingStrategy"]
     })["Campaigns"].map{|c| new({ name: c["Name"], id: c["Id"], status: c["Status"], state: c["State"], type: c["Type"],
                                   target_hours: c["TimeTargeting"]["Schedule"]["Items"], owner_name: c["ClientInfo"],
-                                  negative_keywords: c["NegativeKeywords"]["Items"], search_strategy: c["TextCampaign"]["BiddingStrategy"]["Search"]["BiddingStrategyType"], 
+                                  negative_keywords: (c["NegativeKeywords"].present? ? c["NegativeKeywords"]["Items"] : nil), search_strategy: c["TextCampaign"]["BiddingStrategy"]["Search"]["BiddingStrategyType"], 
                                   network_strategy: c["TextCampaign"]["BiddingStrategy"]["Network"]["BiddingStrategyType"]})}
   end
 
@@ -64,7 +64,6 @@ class YandexDirect::Campaign
 
   def parameters(campaign_type)
     hash = {"Name": @name,
-            "EndDate": @end_date,
             "ClientInfo": @owner_name,
             "Notification": {  
               "EmailSettings": {
@@ -93,6 +92,7 @@ class YandexDirect::Campaign
     hash["ExcludedSites"] = {"Items": @excluded_sites} if @excluded_sites.present?
     hash["Id"] = @id if @id.present? && @id != 0
     hash["StartDate"] = @start_date if @start_date.present?
+    hash["EndDate"] = @end_date if @end_date.present?
     hash[campaign_type.first] = campaign_type.last
     hash
   end

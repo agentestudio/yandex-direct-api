@@ -16,11 +16,12 @@ class YandexDirect::AdGroup
     selection_criteria = {"Types":  ["TEXT_AD_GROUP"]}
     selection_criteria["CampaignIds"] = params[:campaign_ids] if params[:campaign_ids].present?
     selection_criteria["Ids"] = params[:ids] if params[:ids].present?
-    YandexDirect.request(SERVICE, 'get', { 
+    ad_groups = YandexDirect.request(SERVICE, 'get', { 
       "SelectionCriteria": selection_criteria,
       "FieldNames": ['Id', 'Name', 'CampaignId', 'Status', 'RegionIds', 'TrackingParams', 'NegativeKeywords']
-    })["AdGroups"].map{|c| new({name: c["Name"], id: c["Id"], status: c["Status"], campaign_id: c["CampaignId"], 
-                                region_ids: c["RegionIds"], tracking_params: c["TrackingParams"], negative_keywords: c["NegativeKeywords"]})}
+    })["AdGroups"]
+    (ad_groups || []).map{|c| new({ name: c["Name"], id: c["Id"], status: c["Status"], campaign_id: c["CampaignId"], 
+                                    region_ids: c["RegionIds"], tracking_params: c["TrackingParams"], negative_keywords: c["NegativeKeywords"]})}
   end
 
   def self.add(params)
@@ -45,7 +46,6 @@ class YandexDirect::AdGroup
     hash = {"Name": @name,
             "CampaignId": @campaign_id,
             "RegionIds": @region_ids || [0],
-            "NegativeKeywords": {"Items": @negative_keywords || []},
             "TrackingParams": @tracking_params
           }
     hash["NegativeKeywords"] = @negative_keywords if @negative_keywords.present?

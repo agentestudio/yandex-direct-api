@@ -11,7 +11,7 @@ class YandexDirect::Sitelink
   end
 
   def self.get(ids)
-    YandexDirect.request(SERVICE, 'get', {"SelectionCriteria": {"Ids": ids}, "FieldNames": ["Id", "Sitelinks"]})["SitelinksSets"]
+    YandexDirect.request(SERVICE, 'get', {"SelectionCriteria": {"Ids": ids}, "FieldNames": ["Id", "Sitelinks"]})["SitelinksSets"] || []
   end
 
   def self.delete(ids)

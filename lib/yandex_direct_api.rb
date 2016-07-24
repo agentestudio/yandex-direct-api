@@ -61,14 +61,15 @@ module YandexDirect
 
     raise Yandex::API::RuntimeError.new("#{response.code} - #{response.message}") unless response.code.to_i == 200
 
-    json = parse_json(response.body)
-    
-    if json.has_key?('error')
-      code = json['error']['error_code'].to_i
-      error = json['error']['error_detail'].length > 0 ? json['error']['error_detail'] : json['error']['error_string']
-      raise RuntimeError.new "#{code} - #{error}"
+    json = parse_json(response.body)['result']
+    messages = []
+    json.values.first.each do |item|
+      item['Errors'].each do |error|
+        messages.push("#{error['Code'].to_i} - #{error['Message']}: #{error['Details']}")
+      end if item.has_key?('Errors')
     end
-    return json['result']
+    raise RuntimeError.new(messages.join("\n")) if messages.any?
+    return json
   end
 end
 
