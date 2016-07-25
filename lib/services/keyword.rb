@@ -2,20 +2,19 @@ class YandexDirect::Keyword
   SERVICE = 'keywords'
 
   def self.add(params)
-    words = params[:words]
-    ad_group_id = params[:ad_group_id]
-    keywords = words.map do |word|
-      { "Keyword": word[:word],
-        "AdGroupId": ad_group_id,
-        "Bid": word[:bid],
-        "ContextBid": word[:context_bid],
+    keywords = params.map do |word|
+      param = { "Keyword": word[:word],
+        "AdGroupId": word[:ad_group_id],
         "StrategyPriority": word[:strategy_priority] || "NORMAL"
       }
+      param["Bid"] = word[:bid] if word[:bid].present?
+      param["ContextBid"] = word[:context_bid] if word[:context_bid].present?
+      param
     end
-    YandexDirect.request(SERVICE, 'add', {"Keywords": keywords})["AddResults"]
+    keywords.any? ? YandexDirect.request(SERVICE, 'add', {"Keywords": keywords})["AddResults"] : []
   end
 
-  def self.list(params)
+  def self.get(params)
     selection_criteria = {"States":  ["ON"], "Statuses": ["ACCEPTED", "DRAFT"]}
     selection_criteria["CampaignIds"] = params[:campaign_ids] if params[:campaign_ids].present?
     selection_criteria["Ids"] = params[:ids] if params[:ids].present?
@@ -33,5 +32,10 @@ class YandexDirect::Keyword
       }
     end
     YandexDirect.request(SERVICE, 'update', {"Keywords": keywords})["AddResults"]
+  end
+
+  def self.delete(ids)
+    ids = ids.compact.reject{|id| id == 0}
+    YandexDirect.request(SERVICE, 'delete', {"SelectionCriteria": {"Ids": ids}}) if ids.any?
   end
 end

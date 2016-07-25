@@ -62,32 +62,32 @@ class YandexDirect::Add
   end
 
   def self.unarchive(ids)
-    ids = [ids] unless params.kind_of?(Array)
-    action('unarchieve', ids)
+    ids = [ids] unless ids.kind_of?(Array)
+    action('unarchive', ids)
   end
 
   def self.archive(ids)
-    ids = [ids] unless params.kind_of?(Array)
-    action('archieve', ids)
+    ids = [ids] unless ids.kind_of?(Array)
+    action('archive', ids)
   end
 
   def self.stop(ids)
-    ids = [ids] unless params.kind_of?(Array)
+    ids = [ids] unless ids.kind_of?(Array)
     action('suspend', ids)
   end
 
   def self.resume(ids)
-    ids = [ids] unless params.kind_of?(Array)
+    ids = [ids] unless ids.kind_of?(Array)
     action('resume', ids)
   end
 
   def self.moderate(ids)
-    ids = [ids] unless params.kind_of?(Array)
+    ids = [ids] unless ids.kind_of?(Array)
     action('moderate', ids)
   end
 
   def self.delete(ids)
-    ids = [ids] unless params.kind_of?(Array)
+    ids = [ids] unless ids.kind_of?(Array)
     action('delete', ids)
   end
 
@@ -152,11 +152,8 @@ class YandexDirect::Add
     end
   end
 
-  def action(action_name, params)
-    selection_criteria = {}
-    selection_criteria["CampaignIds"] = params[:campaign_ids] if params[:campaign_ids].present?
-    selection_criteria["AdGroupIds"] = params[:ad_group_ids] if params[:ad_group_ids].present?
-    selection_criteria["Ids"] = params[:ids] if params[:ids].present?
-    YandexDirect.request(SERVICE, 'action_name', {"SelectionCriteria": selection_criteria}) if @id.present? && @id != 0
+  def self.action(action_name, ids)
+    ids = ids.compact.reject{|id| id == 0}
+    YandexDirect.request(SERVICE, action_name, {"SelectionCriteria": {"Ids": ids}}) if ids.any?
   end
 end

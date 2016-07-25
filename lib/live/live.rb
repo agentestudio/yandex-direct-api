@@ -47,16 +47,16 @@ module YandexDirect::Live
 
   def self.get_uploaded_image_hashes(params)
     upload_task_ids = params.map{|p| p[:image_upload_task_id]}
+    associations = []
     if upload_task_ids.any?
       image_hashes = YandexDirect::Live.get_image_hash(upload_task_ids)
-      associations = []
       image_hashes.each do |result|
         unless result['Status'] == 'Pending'
-          add = params.find{|p| p.image_upload_task_id == result['AdImageUploadTaskID']}
-          associations.push({add_id: add.add_id, ad_image_hash: result['AdImageHash']}) unless result['Status'] == 'Error'
+          add = params.find{|p| p[:image_upload_task_id] == result['AdImageUploadTaskID']}
+          associations.push({add_id: add[:add_id], ad_image_hash: result['AdImageHash']}) unless result['Status'] == 'Error'
         end
       end
-      associations
     end
+    associations
   end
 end

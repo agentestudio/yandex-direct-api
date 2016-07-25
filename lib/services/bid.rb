@@ -14,14 +14,14 @@ class YandexDirect::Bid
   end
 
   def self.set(bids)
-    bids.map! do |bid|
+    bids = bids.select{|bid| bid[:bid].present?}.map do |bid|
       params = {"Bid": bid[:bid] * 1000000, "StrategyPriority": bid[:StrategyPriority] || "NORMAL"}
-      params["CampaignId"] = bid[:campaign_id] if bid[:campaign_id].present?
-      params["AdGroupId"] = bid[:ad_group_id] if bid[:ad_group_id].present?
-      params["KeywordId"] = bid[:keyword_id] if bid[:keyword_id].present?
+      %w(CampaignId AdGroupId KeywordId).each do |key| 
+        params[key] = bid[key.underscore.to_sym] if bid[key.underscore.to_sym].present?
+      end
       params["ContextBid"] = bid[:context_bid] * 1000000 if bid[:context_bid].present?
       params
     end
-    YandexDirect.request(SERVICE, 'set', {"Bids": bids})["SetResults"]
+    bids.any? ? YandexDirect.request(SERVICE, 'set', {"Bids": bids})["SetResults"] : []
   end
 end
