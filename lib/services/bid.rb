@@ -22,6 +22,6 @@ class YandexDirect::Bid
       params["ContextBid"] = bid[:context_bid] * 1000000 if bid[:context_bid].present?
       params
     end
-    bids.any? ? YandexDirect.request(SERVICE, 'set', {"Bids": bids})["SetResults"] : []
+    bids.any? ? YandexDirect.request(SERVICE, 'set', {"Bids": bids.uniq})["SetResults"] : []
   end
 end

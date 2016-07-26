@@ -31,11 +31,11 @@ class YandexDirect::Keyword
         "Keyword": word[:word]
       }
     end
-    YandexDirect.request(SERVICE, 'update', {"Keywords": keywords})["AddResults"]
+    YandexDirect.request(SERVICE, 'update', {"Keywords": keywords.uniq})["AddResults"]
   end
 
   def self.delete(ids)
-    ids = ids.compact.reject{|id| id == 0}
+    ids = ids.compact.uniq.reject{|id| id == 0}
     YandexDirect.request(SERVICE, 'delete', {"SelectionCriteria": {"Ids": ids}}) if ids.any?
   end
 end
