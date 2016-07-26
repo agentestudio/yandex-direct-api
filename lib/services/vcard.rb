@@ -16,14 +16,14 @@ class YandexDirect::VCard
               "Phone": {
                 "CountryCode": params[:country_code],
                 "CityCode": params[:city_code],
-                "PhoneNumber": params[:phone_number],
-                "Extension": params[:phone_extension],
+                "PhoneNumber": params[:phone_number]
               }
             }
     %w(Street House Building Apartment ExtraMessage Ogrn ContactEmail MetroStationId ContactPerson).each do |key| 
       vcard[key] = params[key.underscore.to_sym] if params[key.underscore.to_sym].present?
     end
     vcard["InstantMessenger"] = {"MessengerClient": params[:messenger_client], "MessengerLogin": params[:messenger_login]} if params[:messenger_client].present? && params[:messenger_login].present?
+    vcard[:Phone]["Extension"] = params[:phone_extension] if params[:phone_extension].present?
     YandexDirect.request(SERVICE, 'add', {"VCards": [vcard]})["AddResults"].first["Id"]
   end
 

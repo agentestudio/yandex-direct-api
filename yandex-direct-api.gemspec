@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# stub: yandex-direct-api 0.0.1 ruby lib
+# stub: yandex-direct-api 1.0.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "yandex-direct-api"
