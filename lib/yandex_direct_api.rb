@@ -48,7 +48,7 @@ module YandexDirect
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
+    http.set_debug_output($stdout) 
     request = Net::HTTP::Post.new(uri.path)
     request['Authorization'] = "Bearer #{configuration['token']}"
     request['Accept-Language'] = configuration['locale']
