@@ -81,12 +81,7 @@ module YandexDirect
   end
 
   def self.get_units
-    units = request('bidmodifiers', 'get', {"SelectionCriteria": {"Levels": ["AD_GROUP"]},
-                                            "FieldNames": ["Id"],
-                                            "MobileAdjustmentFieldNames": [( "BidModifier" )],
-                                            "Page": {"Limit": 1}
-                                            }, true
-                    )
+    units = request('dictionaries', 'get', {"DictionaryNames": ["AdCategories"]}, true)
     units.split('/')[1].to_i
   end
 end
