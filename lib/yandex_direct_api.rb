@@ -41,9 +41,7 @@ module YandexDirect
       method: method,
       params: params
     }
-    if configuration['verbose']
-      puts "\t\033[32mYandexDirect:\033[0m #{service}.#{method}(#{body[:params]})"
-    end
+    puts "\t\033[32mYandexDirect:\033[0m #{service}.#{method}(#{body[:params]})" if configuration['verbose'] && !units
     
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
