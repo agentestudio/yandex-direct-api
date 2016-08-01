@@ -84,8 +84,6 @@ module YandexDirect
     units = request('bidmodifiers', 'get', {"SelectionCriteria": {"Levels": ["AD_GROUP"]},
                                             "FieldNames": ["Id"],
                                             "MobileAdjustmentFieldNames": [( "BidModifier" )],
-                                            "DemographicsAdjustmentFieldNames": [( "Gender" | "Age" | "BidModifier" | "Enabled" )],
-                                            "RetargetingAdjustmentFieldNames": [( "RetargetingConditionId" | "BidModifier" | "Accessible" | "Enabled" )],
                                             "Page": {"Limit": 1}
                                             }, true
                     )
