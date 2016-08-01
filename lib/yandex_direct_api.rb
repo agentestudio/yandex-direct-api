@@ -35,7 +35,7 @@ module YandexDirect
     @configuration = defined?(@environment) ? config[@environment] : config
   end
 
-  def self.request(service, method, params = {})
+  def self.request(service, method, params = {}, units = false)
     uri = URI(url + service)
     body = {
       method: method,
@@ -59,7 +59,9 @@ module YandexDirect
       http.request(request)
     end
 
-    raise Yandex::API::RuntimeError.new("#{response.code} - #{response.message}") unless response.code.to_i == 200
+    raise YandexDirect::RuntimeError.new("#{response.code} - #{response.message}") unless response.code.to_i == 200
+
+    return response['Units'] if units
 
     json = parse_json(response.body)
     messages = []
@@ -76,6 +78,18 @@ module YandexDirect
     end
     raise RuntimeError.new(messages.join("\n")) if messages.any?
     return json['result']
+  end
+
+  def self.get_units
+    units = request('bidmodifiers', 'get', {"SelectionCriteria": {"Levels": ["AD_GROUP"]},
+                                            "FieldNames": ["Id"],
+                                            "MobileAdjustmentFieldNames": [( "BidModifier" )],
+                                            "DemographicsAdjustmentFieldNames": [( "Gender" | "Age" | "BidModifier" | "Enabled" )],
+                                            "RetargetingAdjustmentFieldNames": [( "RetargetingConditionId" | "BidModifier" | "Accessible" | "Enabled" )],
+                                            "Page": {"Limit": 1}
+                                            }, true
+                    )
+    units.split('/')[1].to_i
   end
 end
 
