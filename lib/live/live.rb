@@ -12,7 +12,6 @@ module YandexDirect::Live
     }
 
     url = URI((configuration['sandbox'] ? 'https://api-sandbox.direct.yandex.ru/live/v4/json/' : 'https://api.direct.yandex.ru/live/v4/json/')) if version == :live
-    url = URI((configuration['sandbox'] ? 'https://api-sandbox.direct.yandex.ru/v4/json/' : 'https://api.direct.yandex.ru/v4/json/')) if version == 4
 
     if configuration['verbose']
       puts "\t\033[32mYandex.Direct:\033[0m #{method}(#{body[:param]})"
@@ -59,9 +58,5 @@ module YandexDirect::Live
       end
     end
     associations
-  end
-
-  def self.get_remaining_units
-    YandexDirect::Live.request('GetClientsUnits', [configuration['login']], 4).first['UnitsRest']
   end
 end

@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name = "yandex-direct-api"
-  s.version = "1.0.0"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
@@ -15,4 +15,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/aliceojjm/yandex-direct-api"
   s.rubygems_version = "2.4.8"
   s.summary = "Gem for interaction with Yandex Direct API version 5"
+  s.add_development_dependency "bundler", ">= 1.13"
+  s.add_development_dependency "rake", ">= 11.2.2"
+  s.add_development_dependency "rspec", ">= 3.5.0"
 end
